@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Avatar</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: transparent;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+      }
+
+      #app {
+        display: grid;
+        place-items: center;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      img {
+        display: block;
+        width: min(100vw, 960px);
+        height: auto;
+        image-rendering: pixelated;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app">Generating avatar…</main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
