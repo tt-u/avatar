@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
+  buildDirectAvatarUrl,
   createRandomSeed,
   generateAvatarDataUri,
   getAvatarDownloadFilename,
-  getSeedFromSearch,
 } from '../avatar.ts';
 
 interface Particle {
@@ -98,7 +98,7 @@ export function AvatarGenerator() {
     void handleGenerate(initialSeed);
   }, [handleGenerate]);
 
-  const directLink = `https://blockinsight.top/avatar/?t=${encodeURIComponent(seed || getSeedFromSearch('', createRandomSeed()))}`;
+  const directLink = buildDirectAvatarUrl(seed || createRandomSeed());
 
   return (
     <div className="relative flex flex-col items-center">
@@ -193,7 +193,7 @@ export function AvatarGenerator() {
             `}
           />
           <span className="relative z-10">
-            {isGenerating ? 'Generating...' : 'Generate New Avatar'}
+            {isGenerating ? 'Generating...' : 'Generate'}
           </span>
         </button>
 
@@ -211,12 +211,14 @@ export function AvatarGenerator() {
         </a>
       </div>
 
-      <p className="mt-6 text-xs md:text-sm text-muted-foreground/80 break-all max-w-xl text-center">
-        Seed: {seed}
-      </p>
-      <p className="mt-2 text-[11px] md:text-xs text-muted-foreground/60 break-all max-w-xl text-center">
+      <a
+        href={directLink}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-6 text-[11px] md:text-xs text-muted-foreground/75 break-all max-w-xl text-center underline underline-offset-4 hover:text-primary"
+      >
         Direct link: {directLink}
-      </p>
+      </a>
     </div>
   );
 }

@@ -38,6 +38,10 @@ export function getAvatarDownloadFilename(seed: string): string {
   return `avatar-${normalized}.svg`;
 }
 
+export function buildDirectAvatarUrl(seed: string): string {
+  return `https://blockinsight.top/avatar/?t=${encodeURIComponent(seed)}`;
+}
+
 export async function generateAvatarDataUri(seed: string): Promise<string> {
   const avatar = await generateAvatarFor(seed);
   return extractAvatarDataUri(avatar);

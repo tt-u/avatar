@@ -39,20 +39,13 @@ function RootPage() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 tracking-tight">
             <GlitchText text="PIXEL AVATAR" className="text-foreground" />
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-md mx-auto text-balance">
-            Generate unique pixel art avatars with a single click
-          </p>
         </header>
 
         <AvatarGenerator />
 
-        <p className="mt-12 text-sm text-muted-foreground/60 animate-pulse text-center">
-          Click generate for the interactive mode, or use the direct image endpoint below.
-        </p>
-
-        <footer className="mt-6 text-center text-sm text-muted-foreground/80 space-y-1">
-          <p>
-            BUILT WITH{' '}
+        <footer className="mt-12 text-center text-sm text-muted-foreground/80">
+          <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+            <span>BUILT WITH</span>
             <a
               href="https://www.npmjs.com/package/@bitmappunks/avatar-generator"
               target="_blank"
@@ -61,9 +54,8 @@ function RootPage() {
             >
               @bitmappunks/avatar-generator
             </a>
-          </p>
-          <p>
-            try{' '}
+            <span>·</span>
+            <span>try</span>
             <a
               href="https://blockinsight.top/avatar/?t=seed"
               target="_blank"

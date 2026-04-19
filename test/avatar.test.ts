@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  buildDirectAvatarUrl,
   createRandomSeed,
   extractAvatarDataUri,
   generateAvatarDataUri,
@@ -42,6 +43,13 @@ test('extractAvatarDataUri returns svgBase64 from the generator result object', 
 
 test('getAvatarDownloadFilename normalizes the seed into a predictable svg filename', () => {
   assert.equal(getAvatarDownloadFilename('seed-value 100%'), 'avatar-seed-value-100.svg');
+});
+
+test('buildDirectAvatarUrl encodes the seed in the direct avatar URL', () => {
+  assert.equal(
+    buildDirectAvatarUrl('seed value/100%'),
+    'https://blockinsight.top/avatar/?t=seed%20value%2F100%25',
+  );
 });
 
 test('generateAvatarDataUri returns an SVG data URI', async () => {
