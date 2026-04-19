@@ -43,8 +43,8 @@ function RootPage() {
 
         <AvatarGenerator />
 
-        <footer className="mt-12 text-center text-sm text-muted-foreground/80">
-          <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+        <footer className="fixed bottom-4 left-1/2 z-20 -translate-x-1/2 text-center text-sm text-muted-foreground/80">
+          <p className="flex items-center justify-center gap-x-2 whitespace-nowrap rounded-full border border-primary/15 bg-background/50 px-4 py-2 backdrop-blur-sm">
             <span>BUILT WITH</span>
             <a
               href="https://www.npmjs.com/package/@bitmappunks/avatar-generator"
@@ -53,16 +53,6 @@ function RootPage() {
               className="text-primary hover:text-accent underline underline-offset-4"
             >
               @bitmappunks/avatar-generator
-            </a>
-            <span>·</span>
-            <span>try</span>
-            <a
-              href="https://blockinsight.top/avatar/?t=seed"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:text-accent underline underline-offset-4"
-            >
-              https://blockinsight.top/avatar/?t=seed
             </a>
           </p>
         </footer>
