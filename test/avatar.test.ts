@@ -3,7 +3,9 @@ import test from 'node:test';
 
 import {
   createRandomSeed,
+  extractAvatarDataUri,
   generateAvatarDataUri,
+  getAvatarDownloadFilename,
   getSeedFromSearch,
   isDirectAvatarRequest,
 } from '../src/avatar.ts';
@@ -29,6 +31,17 @@ test('isDirectAvatarRequest is false when t is missing or blank', () => {
 
 test('createRandomSeed combines time and randomness into a deterministic string for injected inputs', () => {
   assert.equal(createRandomSeed(1713548400000, 0.123456789), '1713548400000-123456789');
+});
+
+test('extractAvatarDataUri returns svgBase64 from the generator result object', () => {
+  assert.equal(
+    extractAvatarDataUri({ svgBase64: 'data:image/svg+xml;base64,abc123' }),
+    'data:image/svg+xml;base64,abc123',
+  );
+});
+
+test('getAvatarDownloadFilename normalizes the seed into a predictable svg filename', () => {
+  assert.equal(getAvatarDownloadFilename('seed-value 100%'), 'avatar-seed-value-100.svg');
 });
 
 test('generateAvatarDataUri returns an SVG data URI', async () => {
