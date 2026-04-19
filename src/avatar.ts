@@ -33,6 +33,7 @@ function createAvatarImage(seed: string, dataUri: string): HTMLImageElement {
   image.alt = `Generated avatar for seed ${seed}`;
   image.width = 24;
   image.height = 24;
+  image.className = 'avatar-pop';
 
   return image;
 }
@@ -43,10 +44,46 @@ function replaceUrlSeed(seed: string): void {
   window.history.replaceState({}, '', nextUrl);
 }
 
+function triggerGenerationEffects(
+  avatarCard: HTMLElement,
+  randomButton: HTMLButtonElement,
+  burstContainer: HTMLElement,
+): void {
+  avatarCard.classList.remove('is-generating');
+  randomButton.classList.remove('is-bursting');
+  void avatarCard.offsetWidth;
+
+  avatarCard.classList.add('is-generating');
+  randomButton.classList.add('is-bursting');
+  burstContainer.replaceChildren();
+
+  for (let index = 0; index < 14; index += 1) {
+    const spark = document.createElement('span');
+    const angle = (Math.PI * 2 * index) / 14;
+    const distance = 24 + Math.random() * 44;
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
+
+    spark.className = 'button-spark';
+    spark.style.setProperty('--spark-x', `${x}px`);
+    spark.style.setProperty('--spark-y', `${y}px`);
+    spark.style.setProperty('--spark-delay', `${index * 24}ms`);
+    burstContainer.appendChild(spark);
+  }
+
+  window.setTimeout(() => {
+    avatarCard.classList.remove('is-generating');
+    randomButton.classList.remove('is-bursting');
+    burstContainer.replaceChildren();
+  }, 820);
+}
+
 export interface RenderAvatarElements {
   mountNode: HTMLElement;
   seedLabel: HTMLElement;
   randomButton: HTMLButtonElement;
+  avatarCard: HTMLElement;
+  burstContainer: HTMLElement;
 }
 
 export interface RenderAvatarPageOptions extends RenderAvatarElements {
@@ -72,6 +109,8 @@ export async function renderAvatarPage({
   mountNode,
   seedLabel,
   randomButton,
+  avatarCard,
+  burstContainer,
 }: RenderAvatarPageOptions): Promise<{ seed: string; dataUri: string }> {
   const initialSeed = getSeedFromSearch(search, fallbackSeed);
 
@@ -88,6 +127,8 @@ export async function renderAvatarPage({
 
   randomButton.addEventListener('click', () => {
     randomButton.disabled = true;
+    triggerGenerationEffects(avatarCard, randomButton, burstContainer);
+
     void renderSeed(createRandomSeed())
       .catch((error: unknown) => {
         console.error('Failed to generate random avatar', error);

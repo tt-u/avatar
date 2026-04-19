@@ -60,17 +60,12 @@
         overflow: hidden;
       }
 
-      .orb,
-      .orb::after {
+      .orb {
         position: absolute;
         border-radius: 999px;
         filter: blur(70px);
         opacity: 0.5;
         pointer-events: none;
-      }
-
-      .orb {
-        inset: auto;
         width: 280px;
         height: 280px;
       }
@@ -112,13 +107,13 @@
         z-index: 1;
         width: min(100%, 760px);
         display: grid;
-        gap: 24px;
+        gap: 28px;
         text-align: center;
       }
 
       .hero {
         display: grid;
-        gap: 16px;
+        gap: 8px;
         justify-items: center;
       }
 
@@ -159,14 +154,6 @@
         clip-path: inset(52% 0 0 0);
       }
 
-      .subtitle {
-        margin: 0;
-        max-width: 520px;
-        color: var(--muted);
-        font-size: clamp(16px, 2vw, 22px);
-        line-height: 1.6;
-      }
-
       .panel {
         margin: 0 auto;
         width: min(100%, 420px);
@@ -193,6 +180,7 @@
           linear-gradient(180deg, rgba(255, 79, 163, 0.08), transparent),
           linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(46, 242, 255, 0.06));
         box-shadow: 0 0 60px rgba(255, 79, 163, 0.12);
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
       }
 
       .avatar-card::before {
@@ -206,6 +194,15 @@
         );
         opacity: 0.35;
         pointer-events: none;
+      }
+
+      .avatar-card.is-generating {
+        animation: card-glitch 520ms ease;
+        border-color: rgba(46, 242, 255, 0.48);
+        box-shadow:
+          0 0 0 1px rgba(46, 242, 255, 0.2),
+          0 0 80px rgba(46, 242, 255, 0.2),
+          0 0 60px rgba(255, 79, 163, 0.18);
       }
 
       #avatar {
@@ -225,6 +222,10 @@
         filter:
           drop-shadow(0 0 24px rgba(255, 79, 163, 0.35))
           drop-shadow(0 24px 40px rgba(0, 0, 0, 0.55));
+      }
+
+      #avatar img.avatar-pop {
+        animation: avatar-pop 420ms cubic-bezier(.22, 1, .36, 1);
       }
 
       .footer {
@@ -249,8 +250,40 @@
         justify-content: center;
       }
 
+      .button-wrap {
+        position: relative;
+        display: inline-grid;
+        place-items: center;
+      }
+
+      #button-burst {
+        position: absolute;
+        inset: 50% auto auto 50%;
+        width: 1px;
+        height: 1px;
+        pointer-events: none;
+      }
+
+      .button-spark {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+        background: linear-gradient(135deg, var(--cyan), var(--yellow));
+        box-shadow: 0 0 16px rgba(46, 242, 255, 0.45);
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        animation: spark-burst 620ms ease-out forwards;
+        animation-delay: var(--spark-delay, 0ms);
+      }
+
       button {
         appearance: none;
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
         border: 0;
         padding: 14px 24px;
         border-radius: 16px;
@@ -266,11 +299,33 @@
         transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
       }
 
+      button::before {
+        content: '';
+        position: absolute;
+        inset: -40% 30% auto auto;
+        width: 100px;
+        height: 220%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+        transform: translateX(-180%) rotate(18deg);
+        transition: transform 520ms ease;
+        pointer-events: none;
+        z-index: -1;
+      }
+
       button:hover {
         transform: translateY(-2px) scale(1.02);
         box-shadow:
           0 22px 46px rgba(255, 79, 163, 0.36),
           0 0 32px rgba(46, 242, 255, 0.18);
+      }
+
+      button:hover::before,
+      button.is-bursting::before {
+        transform: translateX(280%) rotate(18deg);
+      }
+
+      button.is-bursting {
+        animation: button-pulse 560ms ease;
       }
 
       button:active {
@@ -314,6 +369,52 @@
         50% { transform: translate3d(0, -20px, 0) rotate(12deg); }
       }
 
+      @keyframes avatar-pop {
+        0% {
+          opacity: 0;
+          transform: scale(0.72) rotate(-8deg);
+          filter: drop-shadow(0 0 0 rgba(255, 79, 163, 0));
+        }
+        55% {
+          opacity: 1;
+          transform: scale(1.07) rotate(2deg);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+      }
+
+      @keyframes button-pulse {
+        0% { transform: scale(1); }
+        40% { transform: scale(0.96); }
+        70% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+
+      @keyframes spark-burst {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.3);
+        }
+        15% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: translate(calc(-50% + var(--spark-x)), calc(-50% + var(--spark-y))) scale(0.1) rotate(28deg);
+        }
+      }
+
+      @keyframes card-glitch {
+        0%, 100% { transform: translate3d(0, 0, 0); }
+        15% { transform: translate3d(-3px, 0, 0); }
+        30% { transform: translate3d(4px, -2px, 0); }
+        45% { transform: translate3d(-4px, 2px, 0); }
+        60% { transform: translate3d(3px, 0, 0); }
+        75% { transform: translate3d(0, -2px, 0); }
+      }
+
       @media (max-width: 640px) {
         .panel {
           padding: 18px;
@@ -346,18 +447,20 @@
       <section class="shell">
         <header class="hero">
           <h1 class="title"><span data-text="Pixel Avatar">Pixel Avatar</span></h1>
-          <p class="subtitle">Generate cyberpunk-style bitmap avatars. Open the root page for the interactive UI, or pass <code>?t=seed</code> to render only the avatar.</p>
         </header>
 
         <section class="panel">
-          <div class="avatar-card">
+          <div class="avatar-card" id="avatar-card">
             <div id="avatar">Generating avatar…</div>
           </div>
 
           <div class="footer">
             <p class="seed">Current seed: <strong id="seed-value">-</strong></p>
             <div class="actions">
-              <button id="random-button" type="button">Generate New Avatar</button>
+              <div class="button-wrap">
+                <div id="button-burst" aria-hidden="true"></div>
+                <button id="random-button" type="button">Generate New Avatar</button>
+              </div>
             </div>
             <p class="hint">Use the button to shuffle a new pixel face</p>
           </div>

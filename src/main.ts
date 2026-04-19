@@ -19,6 +19,8 @@ async function bootstrap(): Promise<void> {
   const avatarMount = document.getElementById('avatar');
   const seedLabel = document.getElementById('seed-value');
   const randomButton = document.getElementById('random-button');
+  const avatarCard = document.getElementById('avatar-card');
+  const burstContainer = document.getElementById('button-burst');
 
   if (!(avatarMount instanceof HTMLElement)) {
     throw new Error('Missing #avatar element');
@@ -32,10 +34,20 @@ async function bootstrap(): Promise<void> {
     throw new Error('Missing #random-button element');
   }
 
+  if (!(avatarCard instanceof HTMLElement)) {
+    throw new Error('Missing #avatar-card element');
+  }
+
+  if (!(burstContainer instanceof HTMLElement)) {
+    throw new Error('Missing #button-burst element');
+  }
+
   await renderAvatarPage({
     mountNode: avatarMount,
     seedLabel,
     randomButton,
+    avatarCard,
+    burstContainer,
   });
 }
 
