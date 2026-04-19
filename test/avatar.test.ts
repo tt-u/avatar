@@ -5,6 +5,7 @@ import {
   createRandomSeed,
   generateAvatarDataUri,
   getSeedFromSearch,
+  isDirectAvatarRequest,
 } from '../src/avatar.ts';
 
 test('getSeedFromSearch returns the provided t query parameter', () => {
@@ -13,6 +14,17 @@ test('getSeedFromSearch returns the provided t query parameter', () => {
 
 test('getSeedFromSearch falls back when t is missing', () => {
   assert.equal(getSeedFromSearch('', 'fallback-seed'), 'fallback-seed');
+});
+
+test('isDirectAvatarRequest is true when a non-empty t query parameter is present', () => {
+  assert.equal(isDirectAvatarRequest('?t=1000000'), true);
+  assert.equal(isDirectAvatarRequest('?foo=1&t=seed-value'), true);
+});
+
+test('isDirectAvatarRequest is false when t is missing or blank', () => {
+  assert.equal(isDirectAvatarRequest(''), false);
+  assert.equal(isDirectAvatarRequest('?t='), false);
+  assert.equal(isDirectAvatarRequest('?foo=1'), false);
 });
 
 test('createRandomSeed combines time and randomness into a deterministic string for injected inputs', () => {

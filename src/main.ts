@@ -1,32 +1,49 @@
 import { Buffer } from 'buffer';
 
-import { renderAvatarPage } from './avatar.ts';
+import {
+  isDirectAvatarRequest,
+  renderAvatarPage,
+  renderDirectAvatarPage,
+} from './avatar.ts';
 
 if (!('Buffer' in globalThis)) {
   Object.assign(globalThis, { Buffer });
 }
 
-const avatarMount = document.getElementById('avatar');
-const seedLabel = document.getElementById('seed-value');
-const randomButton = document.getElementById('random-button');
+async function bootstrap(): Promise<void> {
+  if (isDirectAvatarRequest(window.location.search)) {
+    await renderDirectAvatarPage();
+    return;
+  }
 
-if (!(avatarMount instanceof HTMLElement)) {
-  throw new Error('Missing #avatar element');
+  const avatarMount = document.getElementById('avatar');
+  const seedLabel = document.getElementById('seed-value');
+  const randomButton = document.getElementById('random-button');
+
+  if (!(avatarMount instanceof HTMLElement)) {
+    throw new Error('Missing #avatar element');
+  }
+
+  if (!(seedLabel instanceof HTMLElement)) {
+    throw new Error('Missing #seed-value element');
+  }
+
+  if (!(randomButton instanceof HTMLButtonElement)) {
+    throw new Error('Missing #random-button element');
+  }
+
+  await renderAvatarPage({
+    mountNode: avatarMount,
+    seedLabel,
+    randomButton,
+  });
 }
 
-if (!(seedLabel instanceof HTMLElement)) {
-  throw new Error('Missing #seed-value element');
-}
-
-if (!(randomButton instanceof HTMLButtonElement)) {
-  throw new Error('Missing #random-button element');
-}
-
-renderAvatarPage({
-  mountNode: avatarMount,
-  seedLabel,
-  randomButton,
-}).catch((error: unknown) => {
+bootstrap().catch((error: unknown) => {
   console.error('Failed to render avatar page', error);
-  avatarMount.textContent = 'Avatar generation failed.';
+
+  const avatarMount = document.getElementById('avatar');
+  if (avatarMount instanceof HTMLElement) {
+    avatarMount.textContent = 'Avatar generation failed.';
+  }
 });

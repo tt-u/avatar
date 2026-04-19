@@ -9,6 +9,11 @@ export function getSeedFromSearch(search: string, fallbackSeed = DEFAULT_SEED): 
   return seed || fallbackSeed;
 }
 
+export function isDirectAvatarRequest(search: string): boolean {
+  const params = new URLSearchParams(search);
+  return Boolean(params.get('t')?.trim());
+}
+
 export function createRandomSeed(
   now = Date.now(),
   randomValue = Math.random(),
@@ -19,6 +24,23 @@ export function createRandomSeed(
 export async function generateAvatarDataUri(seed: string): Promise<string> {
   const avatar = await generateAvatarFor(seed);
   return avatar.svgBase64;
+}
+
+function createAvatarImage(seed: string, dataUri: string): HTMLImageElement {
+  const image = document.createElement('img');
+
+  image.src = dataUri;
+  image.alt = `Generated avatar for seed ${seed}`;
+  image.width = 24;
+  image.height = 24;
+
+  return image;
+}
+
+function replaceUrlSeed(seed: string): void {
+  const nextUrl = new URL(window.location.href);
+  nextUrl.searchParams.set('t', seed);
+  window.history.replaceState({}, '', nextUrl);
 }
 
 export interface RenderAvatarElements {
@@ -32,6 +54,18 @@ export interface RenderAvatarPageOptions extends RenderAvatarElements {
   fallbackSeed?: string;
 }
 
+export async function renderAvatarInto(
+  mountNode: HTMLElement,
+  seed: string,
+): Promise<{ seed: string; dataUri: string }> {
+  const dataUri = await generateAvatarDataUri(seed);
+  const image = createAvatarImage(seed, dataUri);
+
+  mountNode.replaceChildren(image);
+
+  return { seed, dataUri };
+}
+
 export async function renderAvatarPage({
   search = window.location.search,
   fallbackSeed = createRandomSeed(),
@@ -41,23 +75,15 @@ export async function renderAvatarPage({
 }: RenderAvatarPageOptions): Promise<{ seed: string; dataUri: string }> {
   const initialSeed = getSeedFromSearch(search, fallbackSeed);
 
-  const renderSeed = async (seed: string) => {
-    const dataUri = await generateAvatarDataUri(seed);
-    const image = document.createElement('img');
-
-    image.src = dataUri;
-    image.alt = `Generated avatar for seed ${seed}`;
-    image.width = 24;
-    image.height = 24;
-
-    mountNode.replaceChildren(image);
+  const renderSeed = async (seed: string, updateUrl = true) => {
+    const result = await renderAvatarInto(mountNode, seed);
     seedLabel.textContent = seed;
 
-    const nextUrl = new URL(window.location.href);
-    nextUrl.searchParams.set('t', seed);
-    window.history.replaceState({}, '', nextUrl);
+    if (updateUrl) {
+      replaceUrlSeed(seed);
+    }
 
-    return { seed, dataUri };
+    return result;
   };
 
   randomButton.addEventListener('click', () => {
@@ -72,5 +98,23 @@ export async function renderAvatarPage({
       });
   });
 
-  return renderSeed(initialSeed);
+  return renderSeed(initialSeed, false);
+}
+
+export async function renderDirectAvatarPage({
+  search = window.location.search,
+  fallbackSeed = DEFAULT_SEED,
+}: {
+  search?: string;
+  fallbackSeed?: string;
+} = {}): Promise<{ seed: string; dataUri: string }> {
+  const seed = getSeedFromSearch(search, fallbackSeed);
+  const dataUri = await generateAvatarDataUri(seed);
+  const image = createAvatarImage(seed, dataUri);
+
+  document.body.className = 'direct-avatar-mode';
+  document.body.replaceChildren(image);
+  document.title = `Avatar ${seed}`;
+
+  return { seed, dataUri };
 }
