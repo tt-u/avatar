@@ -39,7 +39,7 @@ export function getAvatarDownloadFilename(seed: string): string {
 }
 
 export function buildDirectAvatarUrl(seed: string): string {
-  return `https://blockinsight.top/avatar/?t=${encodeURIComponent(seed)}`;
+  return `https://bmp.blockinsight.top/?t=${encodeURIComponent(seed)}`;
 }
 
 export async function generateAvatarDataUri(seed: string): Promise<string> {

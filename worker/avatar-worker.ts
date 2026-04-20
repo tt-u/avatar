@@ -1,5 +1,4 @@
 const DATA_URI_PREFIX = 'data:image/svg+xml;base64,';
-const DIRECT_AVATAR_PATHS = new Set(['/avatar', '/avatar/']);
 const DEFAULT_SEED = 'tt-u-avatar';
 
 export interface AvatarGeneratorResult {
@@ -26,7 +25,11 @@ export function decodeSvgDataUriToUtf8(dataUri: string): string {
 
 export function isDirectAvatarAssetRequest(request: Request): boolean {
   const url = new URL(request.url);
-  return DIRECT_AVATAR_PATHS.has(url.pathname) && Boolean(url.searchParams.get('t')?.trim());
+  const seed = url.searchParams.get('t')?.trim();
+  const lastPathSegment = url.pathname.split('/').at(-1) ?? '';
+  const looksLikeStaticAsset = lastPathSegment.includes('.');
+
+  return Boolean(seed) && !looksLikeStaticAsset;
 }
 
 export async function createAvatarWorkerResponse({

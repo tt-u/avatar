@@ -3,15 +3,20 @@
   "name": "avatar",
   "main": "./worker/index.ts",
   "compatibility_date": "2026-04-20",
+  "routes": [
+    {
+      "pattern": "bmp.blockinsight.top",
+      "zone_name": "blockinsight.top",
+      "custom_domain": true
+    }
+  ],
   "observability": {
     "enabled": true
   },
   "assets": {
+    "binding": "ASSETS",
     "not_found_handling": "single-page-application",
-    "run_worker_first": [
-      "/avatar",
-      "/avatar/"
-    ]
+    "run_worker_first": true
   },
   "compatibility_flags": [
     "nodejs_compat"

@@ -14,7 +14,8 @@ test('decodeSvgDataUriToUtf8 decodes a base64 SVG data URI into raw svg text', (
   assert.equal(decodeSvgDataUriToUtf8(dataUri), svg);
 });
 
-test('isDirectAvatarAssetRequest matches /avatar with a non-empty t query', () => {
+test('isDirectAvatarAssetRequest matches page paths with a non-empty t query', () => {
+  assert.equal(isDirectAvatarAssetRequest(new Request('https://example.com/?t=ttu')), true);
   assert.equal(isDirectAvatarAssetRequest(new Request('https://example.com/avatar?t=ttu')), true);
   assert.equal(isDirectAvatarAssetRequest(new Request('https://example.com/avatar/?t=ttu')), true);
   assert.equal(isDirectAvatarAssetRequest(new Request('https://example.com/avatar/')), false);
@@ -23,7 +24,7 @@ test('isDirectAvatarAssetRequest matches /avatar with a non-empty t query', () =
 
 test('createAvatarWorkerResponse returns SVG bytes and image content type for a t seed', async () => {
   const response = await createAvatarWorkerResponse({
-    request: new Request('https://example.com/avatar/?t=ttu'),
+    request: new Request('https://example.com/?t=ttu'),
     assetsFetch: async () => new Response('asset fallback', { status: 299 }),
     generateAvatarFor: async (seed: string) => {
       assert.equal(seed, 'ttu');

@@ -48,7 +48,7 @@ test('getAvatarDownloadFilename normalizes the seed into a predictable svg filen
 test('buildDirectAvatarUrl encodes the seed in the direct avatar URL', () => {
   assert.equal(
     buildDirectAvatarUrl('seed value/100%'),
-    'https://blockinsight.top/avatar/?t=seed%20value%2F100%25',
+    'https://bmp.blockinsight.top/?t=seed%20value%2F100%25',
   );
 });
 
