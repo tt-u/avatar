@@ -113,7 +113,7 @@ export function AvatarGenerator() {
   const directLink = buildDirectAvatarUrl(seed || createRandomSeed());
 
   return (
-    <div className="relative flex flex-col items-center">
+    <div className="relative flex w-full max-w-[22rem] flex-col items-center md:max-w-none">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {particles.map((particle, index) => (
           <div
@@ -135,7 +135,7 @@ export function AvatarGenerator() {
 
       <div
         className={`
-          relative w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden
+          relative w-[15.5rem] h-[15.5rem] sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden
           bg-card border-2 border-primary/30
           shadow-[0_0_60px_-15px] shadow-primary/50
           transition-all duration-500
@@ -169,12 +169,12 @@ export function AvatarGenerator() {
 
       </div>
 
-      <div className="mt-8 flex flex-col md:flex-row gap-4 items-center justify-center">
+      <div className="mt-6 flex w-full flex-col gap-3 items-stretch justify-center sm:mt-8 md:flex-row md:gap-4 md:items-center">
         <button
           onClick={() => void handleGenerate()}
           disabled={isGenerating}
           className={`
-            px-10 py-4 rounded-xl
+            w-full md:w-auto px-6 py-3.5 md:px-10 md:py-4 rounded-xl
             bg-primary text-primary-foreground font-bold text-lg
             relative overflow-hidden
             transition-all duration-300
@@ -200,7 +200,7 @@ export function AvatarGenerator() {
           href={avatar ?? undefined}
           download={getAvatarDownloadFilename(seed || 'seed')}
           className={`
-            px-8 py-4 rounded-xl border border-primary/40 text-primary font-semibold text-base
+            w-full md:w-auto px-6 py-3.5 md:px-8 md:py-4 rounded-xl border border-primary/40 text-primary font-semibold text-base
             bg-background/40 backdrop-blur-sm transition-all duration-300
             hover:scale-105 hover:border-accent hover:text-accent hover:shadow-[0_0_32px_-8px] hover:shadow-accent/70
             ${avatar ? '' : 'pointer-events-none opacity-50'}
@@ -214,9 +214,10 @@ export function AvatarGenerator() {
         href={directLink}
         target="_blank"
         rel="noreferrer"
-        className="mt-6 text-[11px] md:text-xs text-muted-foreground/75 break-all max-w-xl text-center underline underline-offset-4 hover:text-primary"
+        className="mt-4 max-w-[22rem] text-center text-[11px] text-muted-foreground/75 underline underline-offset-4 hover:text-primary md:mt-6 md:max-w-xl md:text-xs"
       >
-        Direct link: {directLink}
+        <span className="md:hidden">Open direct SVG</span>
+        <span className="hidden md:inline">Direct link: {directLink}</span>
       </a>
     </div>
   );

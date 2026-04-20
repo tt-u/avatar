@@ -2,10 +2,25 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 
 import { createRandomSeed, generateAvatarDataUri } from '../avatar.ts';
 
-const BITMAP_COUNT = 40;
 const MIN_BITMAP_SIZE = 24;
 const MAX_BITMAP_SIZE = 64;
 const POSITION_CANDIDATES = 14;
+
+function getBitmapCount() {
+  if (typeof window === 'undefined') {
+    return 24;
+  }
+
+  if (window.innerWidth < 640) {
+    return 12;
+  }
+
+  if (window.innerWidth < 1024) {
+    return 22;
+  }
+
+  return 40;
+}
 
 interface FloatingBitmap {
   id: number;
@@ -84,7 +99,8 @@ export function FloatingPixels() {
       return positions;
     };
 
-    const positions = createOrganicPositions(BITMAP_COUNT);
+    const bitmapCount = getBitmapCount();
+    const positions = createOrganicPositions(bitmapCount);
 
     const createBitmap = async (id: number): Promise<FloatingBitmap> => {
       const seed = `bg-bmp-${id}-${createRandomSeed()}`;
@@ -136,7 +152,7 @@ export function FloatingPixels() {
       );
     };
 
-    void Promise.all(Array.from({ length: BITMAP_COUNT }, (_, index) => createBitmap(index))).then(
+    void Promise.all(Array.from({ length: bitmapCount }, (_, index) => createBitmap(index))).then(
       (newBitmaps) => {
         if (active) {
           setBitmaps(newBitmaps);

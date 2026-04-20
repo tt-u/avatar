@@ -31,21 +31,21 @@ function RootPage() {
   }, []);
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden">
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-8 sm:py-12">
       <FloatingPixels />
 
       <div className="relative z-10 flex flex-col items-center">
-        <header className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 tracking-tight">
+        <header className="mb-8 text-center sm:mb-12">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-6xl lg:text-7xl">
             <GlitchText text="PIXEL AVATAR" className="text-foreground" />
           </h1>
         </header>
 
         <AvatarGenerator />
 
-        <footer className="fixed bottom-4 left-1/2 z-20 -translate-x-1/2 text-center text-sm text-muted-foreground/80">
-          <p className="flex items-center justify-center gap-x-2 whitespace-nowrap rounded-full border border-primary/15 bg-background/50 px-4 py-2 backdrop-blur-sm">
-            <span>BUILT WITH</span>
+        <footer className="fixed bottom-3 left-1/2 z-20 -translate-x-1/2 text-center text-[10px] text-muted-foreground/65 sm:bottom-4 sm:text-sm sm:text-muted-foreground/80">
+          <p className="flex max-w-[calc(100vw-1.5rem)] flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 rounded-full border border-primary/10 bg-background/35 px-3 py-1.5 backdrop-blur-sm sm:flex-nowrap sm:gap-x-2 sm:border-primary/15 sm:bg-background/50 sm:px-4 sm:py-2">
+            <span className="hidden sm:inline">BUILT WITH</span>
             <a
               href="https://www.npmjs.com/package/@bitmappunks/avatar-generator"
               target="_blank"
