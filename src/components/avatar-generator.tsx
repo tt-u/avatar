@@ -6,6 +6,7 @@ import {
   generateAvatarDataUri,
   getAvatarDownloadFilename,
 } from '../avatar.ts';
+import { runAvatarGenerationCycle } from './avatar-generation.ts';
 
 interface Particle {
   x: number;
@@ -75,22 +76,33 @@ export function AvatarGenerator() {
   }, [particles.length, updateParticles]);
 
   const handleGenerate = useCallback(async (nextSeed?: string) => {
-    setIsGenerating(true);
-    setShowAvatar(false);
-    setGlitchActive(true);
-
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const resolvedSeed = nextSeed ?? createRandomSeed();
-    const avatarDataUrl = await generateAvatarDataUri(resolvedSeed);
-    setAvatar(avatarDataUrl);
-    setSeed(resolvedSeed);
-
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    setGlitchActive(false);
-    setShowAvatar(true);
-    createParticles(50);
-    setIsGenerating(false);
+    await runAvatarGenerationCycle({
+      nextSeed,
+      createRandomSeed,
+      generateAvatarDataUri,
+      onStart: () => {
+        setIsGenerating(true);
+        setGlitchActive(true);
+        createParticles(18);
+      },
+      onAvatarReady: (avatarDataUrl, resolvedSeed) => {
+        setAvatar(avatarDataUrl);
+        setSeed(resolvedSeed);
+        setShowAvatar(false);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setShowAvatar(true);
+          });
+        });
+        createParticles(50);
+      },
+      onFinish: () => {
+        window.setTimeout(() => {
+          setGlitchActive(false);
+        }, 220);
+        setIsGenerating(false);
+      },
+    });
   }, [createParticles]);
 
   useEffect(() => {
@@ -155,19 +167,6 @@ export function AvatarGenerator() {
           />
         )}
 
-        {isGenerating && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-20">
-            <div className="flex gap-2">
-              {[0, 1, 2].map((index) => (
-                <div
-                  key={index}
-                  className="w-4 h-4 bg-primary rounded-sm animate-bounce"
-                  style={{ animationDelay: `${index * 0.15}s` }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       <div className="mt-8 flex flex-col md:flex-row gap-4 items-center justify-center">
@@ -193,7 +192,7 @@ export function AvatarGenerator() {
             `}
           />
           <span className="relative z-10">
-            {isGenerating ? 'Generating...' : 'Generate'}
+            Generate
           </span>
         </button>
 
